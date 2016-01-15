@@ -23,6 +23,14 @@ angular.module('craftberpi.controllers2', []).controller('DashBoardController', 
       return $scope.kettle_state[item.id]['temp'];
     }
   }
+  $scope.getFlip = function(item) {
+    if($scope.kettle_state == undefined) {
+      return ""
+    }
+    else {
+      return $scope.kettle_state[item.id]['flip'];
+    }
+  }
   $scope.buttonState = function(item, element) {
     var state = false;
 

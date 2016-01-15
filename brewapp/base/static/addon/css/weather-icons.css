@@ -281,6 +281,8 @@
 .wi-thermometer:before {
   content: "\f055";
 }
+.wi-thermometer-exterior_red:before{content:"\f053";color:red}
+.wi-thermometer_red:before{content:"\f055";color:red}
 .wi-tornado:before {
   content: "\f056";
 }

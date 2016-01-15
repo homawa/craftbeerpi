@@ -30,6 +30,6 @@ def tempData1Wire(tempSensorId):
         else:
             temp_C = -99 #bad temp reading
     except Exception as e:
-        temp_C = round(randint(0,50),2)
+        temp_C = -99
 
     return float(format(temp_C, '.2f'))

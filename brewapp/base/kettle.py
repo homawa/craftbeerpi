@@ -110,18 +110,33 @@ def initKettle():
     for v in kettles:
         app.brewapp_kettle_temps_log[v.id] = []
         app.brewapp_kettle_state[v.id] = {}
-        app.brewapp_kettle_state[v.id]["temp"] = 0
+        app.brewapp_kettle_state[v.id]["temp"] = -99
         app.brewapp_kettle_state[v.id]["target_temp"] = v.target_temp
         app.brewapp_kettle_state[v.id]["sensorid"]  = v.sensorid
         app.brewapp_kettle_state[v.id]["automatic"] = {"state": False }
         app.brewapp_kettle_state[v.id]["agitator"]  = {"state": False, "gpio": v.agitator}
         app.brewapp_kettle_state[v.id]["heater"]    = {"state": False, "gpio": v.heater}
+        app.brewapp_kettle_state[v.id]["flip"] = ""
 ## JOBS
 @brewjob(key="readtemp", interval=5)
 def readKettleTemp():
     for vid in app.brewapp_kettle_state:
-        app.brewapp_kettle_state[vid]["temp"] = tempData1Wire(app.brewapp_kettle_state[vid]["sensorid"])
+        aktTemp = tempData1Wire(app.brewapp_kettle_state[vid]["sensorid"])
+        if aktTemp != -99:
+           app.brewapp_kettle_state[vid]["temp"] = aktTemp
         timestamp = int((datetime.utcnow() - datetime(1970,1,1)).total_seconds())*1000
         app.brewapp_kettle_temps_log[vid] += [[timestamp, app.brewapp_kettle_state[vid]["temp"] ]]
+        
+        ## Change thermometer-marker of frontend
+        if (app.brewapp_kettle_state[vid]["flip"] == " " or app.brewapp_kettle_state[vid]["flip"] == "_red"):   
+           if aktTemp == -99:
+              app.brewapp_kettle_state[vid]["flip"] = "-exterior_red"
+           else:
+              app.brewapp_kettle_state[vid]["flip"] = "-exterior"
+        else:
+           if aktTemp == -99:
+              app.brewapp_kettle_state[vid]["flip"] = "_red"
+           else:
+              app.brewapp_kettle_state[vid]["flip"] = " "
 
     socketio.emit('kettle_state_update', app.brewapp_kettle_state, namespace ='/brew')

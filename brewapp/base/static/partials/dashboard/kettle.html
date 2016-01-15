@@ -32,7 +32,7 @@
   <div class="panel-body">
     <div class="row">
       <div class="col-xs-12">
-        <span class="temp"><i class="wi wi-thermometer"></i> <b>{{ getTemp(v) }}°C</b></span>
+        <span class="temp"><i class="wi wi-thermometer{{getFlip(v)}}"></i> <b>{{ getTemp(v) }}°C</b></span>
         <span class="pull-right" ng-if="v.heater"><i class="fa fa-crosshairs"></i>
           <strong>{{v.target_temp}}°C</strong>
         </span>
