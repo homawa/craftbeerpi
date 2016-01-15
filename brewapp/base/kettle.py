@@ -104,6 +104,9 @@ def init():
     manager.create_api(Kettle2, methods=['GET', 'POST', 'DELETE', 'PUT'], postprocessors={'POST': [post_post], 'PATCH_SINGLE': [post_post]})
     initKettle()
     initGPIO()
+    
+    if app.brewapp_owWin == True:
+        initWsWin()
 
 def initKettle():
     kettles = Kettle2.query.all()
@@ -118,12 +121,14 @@ def initKettle():
         app.brewapp_kettle_state[v.id]["heater"]    = {"state": False, "gpio": v.heater}
         app.brewapp_kettle_state[v.id]["flip"] = ""
 ## JOBS
-@brewjob(key="readtemp", interval=5)
+@brewjob(key="readtemp", interval=1)
 def readKettleTemp():
     for vid in app.brewapp_kettle_state:
+        
         aktTemp = tempData1Wire(app.brewapp_kettle_state[vid]["sensorid"])
         if aktTemp != -99:
            app.brewapp_kettle_state[vid]["temp"] = aktTemp
+
         timestamp = int((datetime.utcnow() - datetime(1970,1,1)).total_seconds())*1000
         app.brewapp_kettle_temps_log[vid] += [[timestamp, app.brewapp_kettle_state[vid]["temp"] ]]
         

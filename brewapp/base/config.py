@@ -12,3 +12,7 @@ app.brewapp_kettle = {}
 app.brewapp_kettle_temps_log = {}
 app.brewapp_kettle_automatic = {}
 app.brewapp_pid_state =  {}
+
+# Windows
+app.brewapp_owWin = True
+

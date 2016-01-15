@@ -2,38 +2,43 @@ from brewapp import app, socketio, db
 from brewapp.base.util import *
 from subprocess import call
 from step import nextStep, reset
+from brewapp.base.w1_thermometer import *
 
-try:
-    import RPi.GPIO as GPIO
-    GPIO.setmode(GPIO.BCM)
-except:
-    pass
+if app.brewapp_owWin != True:
+    try:
+        import RPi.GPIO as GPIO
+        GPIO.setmode(GPIO.BCM)
+    except:
+        pass
 
 def initGPIO():
-    app.logger.info("## Init GIPO")
-    try:
-        call(["modprobe", "w1-gpio"])
-        call(["modprobe", "w1-therm"])
-        for vid in app.brewapp_kettle_state:
-            app.logger.info("## Kettle: " + str(vid))
-            heater_gpio = app.brewapp_kettle_state[vid]["heater"]["gpio"]
-            if(heater_gpio != None and heater_gpio != ""):
-                app.logger.info("SETUP GPIO HEATER: " + str(app.brewapp_kettle_state[vid]["heater"]["gpio"]))
-                GPIO.setup(int(app.brewapp_kettle_state[vid]["heater"]["gpio"]), GPIO.OUT)
-                GPIO.output(app.brewapp_kettle_state[vid]["heater"]["gpio"], 1)
-            agiator_gpio = app.brewapp_kettle_state[vid]["agitator"]["gpio"]
-            if(agiator_gpio != None and agiator_gpio != ""):
-                app.logger.info("SETUP GPIO AGITATOR" + str(app.brewapp_kettle_state[vid]["agitator"]["gpio"]))
-                GPIO.setup(app.brewapp_kettle_state[vid]["agitator"]["gpio"], GPIO.OUT)
-                GPIO.output(app.brewapp_kettle_state[vid]["agitator"]["gpio"], 1)
-        #initHardwareButton()
-        app.brewapp_gpio = True
-        app.logger.info("ALL GPIO INITIALIZED")
-        print "GPIO OK"
-    except Exception as e:
-        print "GPIO ERROR"
-        app.logger.error("SETUP GPIO FAILD " + str(e))
-        app.brewapp_gpio = False
+    if app.brewapp_owWin == True:
+        initWsWin()
+    else:
+        app.logger.info("## Init GIPO")
+        try:
+            call(["modprobe", "w1-gpio"])
+            call(["modprobe", "w1-therm"])
+            for vid in app.brewapp_kettle_state:
+                app.logger.info("## Kettle: " + str(vid))
+                heater_gpio = app.brewapp_kettle_state[vid]["heater"]["gpio"]
+                if(heater_gpio != None and heater_gpio != ""):
+                    app.logger.info("SETUP GPIO HEATER: " + str(app.brewapp_kettle_state[vid]["heater"]["gpio"]))
+                    GPIO.setup(int(app.brewapp_kettle_state[vid]["heater"]["gpio"]), GPIO.OUT)
+                    GPIO.output(app.brewapp_kettle_state[vid]["heater"]["gpio"], 1)
+                agiator_gpio = app.brewapp_kettle_state[vid]["agitator"]["gpio"]
+                if(agiator_gpio != None and agiator_gpio != ""):
+                    app.logger.info("SETUP GPIO AGITATOR" + str(app.brewapp_kettle_state[vid]["agitator"]["gpio"]))
+                    GPIO.setup(app.brewapp_kettle_state[vid]["agitator"]["gpio"], GPIO.OUT)
+                    GPIO.output(app.brewapp_kettle_state[vid]["agitator"]["gpio"], 1)
+            #initHardwareButton()
+            app.brewapp_gpio = True
+            app.logger.info("ALL GPIO INITIALIZED")
+            print "GPIO OK"
+        except Exception as e:
+            print "GPIO ERROR"
+            app.logger.error("SETUP GPIO FAILD " + str(e))
+            app.brewapp_gpio = False
 
 ## Callback Method for Hardware Button
 def nextStepCallback(channel):
