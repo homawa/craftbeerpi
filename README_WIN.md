@@ -4,7 +4,7 @@
 * Thermometer (DS18B20) mit RJ11-Stecker
 * Malz, Hopfen, ....  
 
-### Funktionalität
+## Funktionalität
 Monitorung der Themperaturen ohne Unterstützung der Steuerung (Heizung), da keine GPIOs verwendet werden.  
 ## Anpassung für Installation auf Windows
 ### Cygwin downloaden und installieren 
