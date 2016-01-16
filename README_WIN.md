@@ -5,7 +5,7 @@
 * Malz, Hopfen, ....  
 
 ## Funktionalität
-Monitorung der Themperaturen ohne Unterstützung der Steuerung (Heizung), da keine GPIOs verwendet werden.  
+Monitoring der Temperaturen ohne Unterstützung der Steuerung (Heizung, Rührwerk, ...), da keine GPIOs verwendet werden.  
 ## Anpassung für Installation auf Windows
 ### Cygwin downloaden und installieren 
 https://cygwin.com/install.html  
